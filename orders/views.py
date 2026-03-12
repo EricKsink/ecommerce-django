@@ -3,10 +3,29 @@ from carts.models import CartItem
 from .forms import OrderForm
 from .models import Order
 import datetime
-
+from .models import Order, Payment
+import json
 # Create your views here.
 
 def payments(request):
+    body = json.loads(request.body)
+    order = Order.objects.get(user=request.user, is_ordered=False, order_number=body['orderID'])
+    
+    payment = Payment(
+        user = request.user,
+        payment_id = body['transID'],
+        payment_method = body['payment_method'],
+        amount_id = order.order_total,
+        status = body['status']
+    )
+    
+    payment.save()
+    
+    order.payment = payment
+    order.is_ordered = True
+    order.save()
+    
+    
     return render(request, 'orders/payments.html')
     
 
