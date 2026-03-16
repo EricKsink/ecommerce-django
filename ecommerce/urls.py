@@ -21,8 +21,15 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.urls import include
 
+#esta libreria es para la ruta admin fake y que regrese un errror
+from django.http import HttpResponseNotFound
+
+def fake_admin(request):
+    return HttpResponseNotFound()
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', fake_admin),
+    path('securelogin/', admin.site.urls),
     path('', views.home, name='home'),
     path('store/', include('store.urls')),
     path('cart/', include('carts.urls')),
